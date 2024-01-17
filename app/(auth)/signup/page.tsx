@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 type Inputs = {
-  name: string;
+  phone: number;
   email: string;
   password: string;
   offers: boolean;
@@ -40,10 +40,10 @@ const SignUpPage = () => {
     if (!offers && !rules) {
       setError("Please agree with policies to continue");
     } else {
-      startTransition(async() => {
+      startTransition(async () => {
         const values = {
-          name: data.name,
-          phone: data.email,
+          phone: data.phone,
+          email: data.email,
           password: data.password,
           offers: offers,
           rules: rules,
@@ -107,17 +107,17 @@ const SignUpPage = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="my-5 flex-col">
           <Input
             className="rounded-r-none rounded focus-visible:ring-0   focus-visible:ring-offset-0 border border-black/20 focus:border-black/40 outline-none pl-4 pr-10 w-full py-3"
-            placeholder="Your name"
+            placeholder="Your phone"
             type="text"
-            {...register("name", { required: true })}
+            {...register("phone", { required: true })}
           />
-          {errors.name && (
-            <span className="text-red-400 text-sm mt-1">Name is required</span>
+          {errors.phone && (
+            <span className="text-red-400 text-sm mt-1">Phone is required</span>
           )}
           <Input
             className={cn(
               "rounded-r-none rounded focus-visible:ring-0   focus-visible:ring-offset-0 border border-black/20 focus:border-black/40 outline-none pl-4 pr-10 w-full py-3 mt-5",
-              errors.name && "mt-2"
+              errors.phone && "mt-2"
             )}
             placeholder="Your email"
             type="email"
@@ -182,7 +182,10 @@ const SignUpPage = () => {
             </h3>
           </div>
           <div className="text-red-400 text-sm my-3">{error}</div>
-          <Button className="w-full" disabled={isPending}> Continue</Button>
+          <Button className="w-full" disabled={isPending}>
+            {" "}
+            Continue
+          </Button>
         </form>
         <div className="flex justify-center gap-x-1">
           <h2 className=" text-muted-foreground text-[15px]">

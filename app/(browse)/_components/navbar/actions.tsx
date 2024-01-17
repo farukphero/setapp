@@ -38,9 +38,10 @@ export const PhoneActionsItems = async () => {
         <li className="text-black cursor-pointer hover:underline text-xl font-medium pt-4">
           Podcast
         </li>
+        <Link href={"/login"}>
         <li className="text-black cursor-pointer hover:underline text-xl font-medium pt-4">
           Sign in
-        </li>
+        </li></Link>
       </ul>
     </div>
   );
