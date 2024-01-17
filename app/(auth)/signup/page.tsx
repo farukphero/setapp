@@ -109,10 +109,18 @@ const SignUpPage = () => {
             className="rounded-r-none rounded focus-visible:ring-0   focus-visible:ring-offset-0 border border-black/20 focus:border-black/40 outline-none pl-4 pr-10 w-full py-3"
             placeholder="Your phone"
             type="text"
-            {...register("phone", { required: true })}
+            {...register("phone", {
+              required: "Phone is required",
+              pattern: {
+                value: /^\d+$/,
+                message: "Phone must be a number",
+              },
+            })}
           />
           {errors.phone && (
-            <span className="text-red-400 text-sm mt-1">Phone is required</span>
+            <span className="text-red-400 text-sm mt-1">
+              {errors.phone.message}
+            </span>
           )}
           <Input
             className={cn(
