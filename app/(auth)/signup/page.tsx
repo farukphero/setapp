@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ type Inputs = {
 };
 
 const SignUpPage = () => {
+  const [isPending, startTransition] = useTransition();
   const [offers, setOffers] = useState(false);
   const [rules, setRules] = useState(false);
   const [error, setError] = useState("");
@@ -39,28 +40,30 @@ const SignUpPage = () => {
     if (!offers && !rules) {
       setError("Please agree with policies to continue");
     } else {
-      const values = {
-        name: data.name,
-        phone: data.email,
-        password: data.password,
-        offers: offers,
-        rules: rules,
-      };
-      try {
-        const response = await axios.post(
-          "https://dev-api.lazyfolks.in/accounts/signup/",
-          values
-        );
-         
-        if (response.data.status === 400) {
-          toast.success("Account created successful.");
-          setOffers(false)
-          setRules(false)
-          reset();
+      startTransition(async() => {
+        const values = {
+          name: data.name,
+          phone: data.email,
+          password: data.password,
+          offers: offers,
+          rules: rules,
+        };
+        try {
+          const response = await axios.post(
+            "https://dev-api.lazyfolks.in/accounts/signup/",
+            values
+          );
+
+          if (response.data.status === 400) {
+            toast.success("Account created successful.");
+            setOffers(false);
+            setRules(false);
+            reset();
+          }
+        } catch (error: any) {
+          toast.error(error.message);
         }
-      } catch (error: any) {
-        toast.error(error.message);
-      }
+      });
     }
   };
 
@@ -71,8 +74,6 @@ const SignUpPage = () => {
     setRules(!rules);
   };
 
-
-  console.log(offers, rules)
   return (
     <div className="w-full rounded shadow-2xl flex justify-center p-8 border-t-2 z-50 mt-16 lg:mt-0">
       <div className="w-full">
@@ -114,7 +115,10 @@ const SignUpPage = () => {
             <span className="text-red-400 text-sm mt-1">Name is required</span>
           )}
           <Input
-            className={cn("rounded-r-none rounded focus-visible:ring-0   focus-visible:ring-offset-0 border border-black/20 focus:border-black/40 outline-none pl-4 pr-10 w-full py-3 mt-5", errors.name && "mt-2" )}
+            className={cn(
+              "rounded-r-none rounded focus-visible:ring-0   focus-visible:ring-offset-0 border border-black/20 focus:border-black/40 outline-none pl-4 pr-10 w-full py-3 mt-5",
+              errors.name && "mt-2"
+            )}
             placeholder="Your email"
             type="email"
             {...register("email", {
@@ -131,7 +135,10 @@ const SignUpPage = () => {
             </span>
           )}
           <Input
-            className={cn("rounded-none  rounded-l-sm focus-visible:ring-0   focus-visible:ring-offset-0 border border-black/20 focus:border-black/40 outline-none pl-4 pr-10 w-full py-3 mt-5", errors.email && "mt-2")}
+            className={cn(
+              "rounded-none  rounded-l-sm focus-visible:ring-0   focus-visible:ring-offset-0 border border-black/20 focus:border-black/40 outline-none pl-4 pr-10 w-full py-3 mt-5",
+              errors.email && "mt-2"
+            )}
             placeholder="Create password"
             type="password"
             {...register("password", {
@@ -175,7 +182,7 @@ const SignUpPage = () => {
             </h3>
           </div>
           <div className="text-red-400 text-sm my-3">{error}</div>
-          <Button className="w-full"> Continue</Button>
+          <Button className="w-full" disabled={isPending}> Continue</Button>
         </form>
         <div className="flex justify-center gap-x-1">
           <h2 className=" text-muted-foreground text-[15px]">

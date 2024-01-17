@@ -14,7 +14,7 @@ const Drawer = ({
     {...props}
   />
 )
-Drawer.displayName = "Dxsxrawer"
+Drawer.displayName = "Drawer"
 
 const DrawerTrigger = DrawerPrimitive.Trigger
 
